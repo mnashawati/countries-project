@@ -72,6 +72,7 @@ function getCountriesData() {
     .then((data) => {
       allCountries = data;
       showCountries(allCountries);
+      console.log(data);
     });
 }
 

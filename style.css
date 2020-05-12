@@ -1,8 +1,27 @@
 body {
-  background-color: white;
+  background-color: beige;
+}
+
+.country-card {
+  background: white;
+  border: 1px;
+  border-radius: 5px;
+  margin: 20px;
+  height: 335px;
+  width: 265px;
+}
+
+.image-container {
 }
 
 .flag {
-  width: 100%;
+  /* min-width: 265px; */
+  margin: 0;
+  /* width: 100%;
+  height: 55%; */
+  width: 265px;
   height: 160px;
+  border-radius: 5px 5px 0 0;
+
+  /* border: 1px solid black; */
 }

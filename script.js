@@ -4,7 +4,7 @@ const rowEl = createElem("div", root, "row");
 let allCountries = [];
 
 function setup() {
-  createHeaderEls();
+  setupHeader();
   getCountriesData();
 }
 
@@ -15,7 +15,7 @@ function createElem(tag, parent, cls) {
   return elem;
 }
 
-function createHeaderEls() {
+function setupHeader() {
   const header = document.createElement("header");
   document.body.insertBefore(header, document.body.firstChild);
 
@@ -31,21 +31,63 @@ function createHeaderEls() {
       country.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
+
+  const regionSelector = createElem("select", header, "select-menu");
+
+  const filterByRegionOption = addMenuOption(
+    regionSelector,
+    "select-option",
+    "Filter by Region"
+  );
+
+  const africaOp = addMenuOption(regionSelector, "select-option", "Africa");
+
+  const americaOp = addMenuOption(regionSelector, "select-option", "Americas");
+
+  const asiaOp = addMenuOption(regionSelector, "select-option", "Asia");
+
+  const europeOp = addMenuOption(regionSelector, "select-option", "Europe");
+
+  const oceaniaOp = addMenuOption(regionSelector, "select-option", "Oceania");
+
+  regionSelector.addEventListener("input", () => {
+    regionSelector.value === "Filter by Region"
+      ? showCountries(allCountries)
+      : filterByRegion(allCountries, regionSelector.value);
+  });
+
+  function filterByRegion(countries, selectValue) {
+    let filteredCountriesByRegion = countries.filter(
+      (country) => country.region === selectValue
+    );
+    showCountries(filteredCountriesByRegion);
+  }
+}
+
+function addMenuOption(selector, optionClass, optionText) {
+  const option = createElem("option", selector, optionClass);
+  option.innerText = optionText;
+  option.value = optionText;
+  return option;
 }
 
 function showCountries(countries) {
+  rowEl.innerHTML = "";
   countries.forEach((country) => {
     createCard(country);
   });
 }
 
 function createCard(country) {
-  const countryCard = createElem("div", rowEl, "country-card col-3");
+  const cardContainer = createElem("div", rowEl, "card-container col-3");
 
-  const imageContainer = createElem("div", countryCard, "image-container");
+  const countryCard = createElem("div", cardContainer, "country-card");
 
-  const flag = createElem("img", imageContainer, "flag");
+  //   const imageContainer = createElem("div", countryCard, "image-container");
+
+  const flag = createElem("img", countryCard, "flag");
   flag.src = country.flag;
+  flag.alt = `Flag of ${country.name}`;
 
   const infoDiv = createElem("div", countryCard, "info");
 

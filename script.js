@@ -22,7 +22,6 @@ function setupHeader() {
   const searchBox = createElem("input", header, "search-box");
   searchBox.addEventListener("input", () => {
     let searchedCountries = searchCountries(allCountries, searchBox.value);
-    rowEl.innerHTML = "";
     showCountries(searchedCountries);
   });
 
@@ -41,13 +40,9 @@ function setupHeader() {
   );
 
   const africaOp = addMenuOption(regionSelector, "select-option", "Africa");
-
   const americaOp = addMenuOption(regionSelector, "select-option", "Americas");
-
   const asiaOp = addMenuOption(regionSelector, "select-option", "Asia");
-
   const europeOp = addMenuOption(regionSelector, "select-option", "Europe");
-
   const oceaniaOp = addMenuOption(regionSelector, "select-option", "Oceania");
 
   regionSelector.addEventListener("input", () => {
@@ -55,6 +50,13 @@ function setupHeader() {
       ? showCountries(allCountries)
       : filterByRegion(allCountries, regionSelector.value);
   });
+
+  function addMenuOption(parentSelectEl, optionClass, optionText) {
+    const option = createElem("option", parentSelectEl, optionClass);
+    option.innerText = optionText;
+    option.value = optionText;
+    return option;
+  }
 
   function filterByRegion(countries, selectValue) {
     let filteredCountriesByRegion = countries.filter(
@@ -64,11 +66,13 @@ function setupHeader() {
   }
 }
 
-function addMenuOption(selector, optionClass, optionText) {
-  const option = createElem("option", selector, optionClass);
-  option.innerText = optionText;
-  option.value = optionText;
-  return option;
+function getCountriesData() {
+  fetch("https://restcountries.eu/rest/v2/all")
+    .then((response) => response.json())
+    .then((data) => {
+      allCountries = data;
+      showCountries(allCountries);
+    });
 }
 
 function showCountries(countries) {
@@ -102,15 +106,6 @@ function createCard(country) {
 
   const capital = createElem("p", infoDiv, "capital");
   capital.innerText = `Capital: ${country.capital}`;
-}
-
-function getCountriesData() {
-  fetch("https://restcountries.eu/rest/v2/all")
-    .then((response) => response.json())
-    .then((data) => {
-      allCountries = data;
-      showCountries(allCountries);
-    });
 }
 
 window.onload = setup;

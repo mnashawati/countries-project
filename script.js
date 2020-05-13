@@ -111,7 +111,7 @@ function createCard(country) {
   name.innerText = country.name;
 
   const population = createElem("p", infoDiv, "population");
-  population.innerText = `Population: ${country.population}`;
+  population.innerText = `Population: ${country.population.toLocaleString()}`;
 
   const region = createElem("p", infoDiv, "region");
   region.innerText = `Region: ${country.region}`;
@@ -152,7 +152,7 @@ function displayCountryDetails(country) {
   nativeNameDetail.innerText = `Native Name: ${country.nativeName}`;
 
   const populationDetail = createElem("p", firstInfoDiv, "population-detail");
-  populationDetail.innerText = `Population: ${country.population}`;
+  populationDetail.innerText = `Population: ${country.population.toLocaleString()}`;
 
   const regionDetail = createElem("p", firstInfoDiv, "region-detail");
   regionDetail.innerText = `Region: ${country.region}`;
@@ -195,7 +195,7 @@ function displayCountryDetails(country) {
 
   country.borders.forEach((border) => {
     const borderCountries = createElem("button", borderCountriesDiv, "borders");
-    borderCountries.innerText = getCountryNameFromCode(border);
+    borderCountries.innerText = getCountryNameFromCode(allCountries, border);
 
     borderCountries.addEventListener("click", () => {
       let clickedBorderCountry = allCountries.find(
@@ -204,13 +204,11 @@ function displayCountryDetails(country) {
       displayCountryDetails(clickedBorderCountry);
     });
   });
+}
 
-  function getCountryNameFromCode(code) {
-    let targetCountry = allCountries.find(
-      (country) => country.alpha3Code === code
-    );
-    return targetCountry.name;
-  }
+function getCountryNameFromCode(countries, code) {
+  let targetCountry = countries.find((country) => country.alpha3Code === code);
+  return targetCountry.name;
 }
 
 window.onload = setup;

@@ -128,11 +128,13 @@ function createCard(country) {
 }
 
 function displayCountryDetails(country) {
+  document.querySelector("header").innerHTML = "";
   rowEl.innerHTML = "";
   const backBtnDiv = createElem("div", rowEl, "back-btn-div");
   const backBtn = createElem("button", backBtnDiv, "back-btn");
   backBtn.innerText = "back";
   backBtn.addEventListener("click", () => {
+    setupHeader();
     showCountries(allCountries);
   });
 

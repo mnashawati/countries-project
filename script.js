@@ -2,6 +2,7 @@ const root = document.getElementById("root");
 const rowEl = createElem("div", root, "row");
 
 let allCountries = [];
+let selectedCountry = [];
 
 function setup() {
   setupHeader();
@@ -20,10 +21,12 @@ function setupHeader() {
   document.body.insertBefore(header, document.body.firstChild);
 
   const searchBox = createElem("input", header, "search-box");
-  searchBox.addEventListener("input", () => {
+  searchBox.addEventListener("input", callback);
+
+  function callback() {
     let searchedCountries = searchCountries(allCountries, searchBox.value);
     showCountries(searchedCountries);
-  });
+  }
 
   function searchCountries(countries, searchTerm) {
     return countries.filter((country) =>
@@ -33,19 +36,15 @@ function setupHeader() {
 
   const regionSelector = createElem("select", header, "select-menu");
 
-  const filterByRegionOption = addMenuOption(
-    regionSelector,
-    "select-option",
-    "Filter by Region"
-  );
+  addMenuOption(regionSelector, "select-option", "Filter by Region");
 
-  const africaOp = addMenuOption(regionSelector, "select-option", "Africa");
-  const americaOp = addMenuOption(regionSelector, "select-option", "Americas");
-  const asiaOp = addMenuOption(regionSelector, "select-option", "Asia");
-  const europeOp = addMenuOption(regionSelector, "select-option", "Europe");
-  const oceaniaOp = addMenuOption(regionSelector, "select-option", "Oceania");
+  addMenuOption(regionSelector, "select-option", "Africa");
+  addMenuOption(regionSelector, "select-option", "Americas");
+  addMenuOption(regionSelector, "select-option", "Asia");
+  addMenuOption(regionSelector, "select-option", "Europe");
+  addMenuOption(regionSelector, "select-option", "Oceania");
 
-  regionSelector.addEventListener("input", () => {
+  regionSelector.addEventListener("change", () => {
     regionSelector.value === "Filter by Region"
       ? showCountries(allCountries)
       : filterByRegion(allCountries, regionSelector.value);
@@ -107,6 +106,91 @@ function createCard(country) {
 
   const capital = createElem("p", infoDiv, "capital");
   capital.innerText = `Capital: ${country.capital}`;
+
+  countryCard.addEventListener("click", callback);
+
+  function callback() {
+    rowEl.innerHTML = "";
+    console.log("clicked");
+    displayCountryDetails(country);
+  }
+}
+
+function displayCountryDetails(country) {
+  rowEl.innerHTML = "";
+  const backBtnDiv = createElem("div", rowEl, "back-btn-div");
+  const backBtn = createElem("button", backBtnDiv, "back-btn");
+  backBtn.innerText = "back";
+  backBtn.addEventListener("click", () => {
+    showCountries(allCountries);
+  });
+
+  const flagImageDiv = createElem("div", rowEl, "flag-image-div");
+  const flagImageLrg = createElem("img", flagImageDiv, "flag-image-lrg");
+  flagImageLrg.src = country.flag;
+  flagImageLrg.alt = `Flag of ${country.name}`;
+
+  const firstInfoDiv = createElem("div", rowEl, "first-info-div");
+
+  const nameDetail = createElem("h3", firstInfoDiv, "name-detail");
+  nameDetail.innerText = country.name;
+
+  const nativeNameDetail = createElem("p", firstInfoDiv, "native-name-detail");
+  nativeNameDetail.innerText = `Native Name: ${country.nativeName}`;
+
+  const populationDetail = createElem("p", firstInfoDiv, "population-detail");
+  populationDetail.innerText = `Population: ${country.population}`;
+
+  const regionDetail = createElem("p", firstInfoDiv, "region-detail");
+  regionDetail.innerText = `Region: ${country.region}`;
+
+  const subRegionDetail = createElem("p", firstInfoDiv, "sub-region-detail");
+  subRegionDetail.innerText = `Sub Region: ${country.subregion}`;
+
+  const capitalDetail = createElem("p", firstInfoDiv, "capital-detail");
+  capitalDetail.innerText = `Capital: ${country.capital}`;
+
+  const secondInfoDiv = createElem("div", rowEl, "second-info-div");
+
+  const topLevelDomain = createElem("p", secondInfoDiv, "top-level-domain");
+  topLevelDomain.innerText = `Top Level Domain: ${country.topLevelDomain[0]}`;
+
+  const currencies = createElem("p", secondInfoDiv, "currencies");
+  currencies.innerText = `Currencies: ${country.currencies[0].name}`;
+
+  const languages = createElem("p", secondInfoDiv, "languages");
+  languages.innerText = `Languages: ${showAllLanguages(country.languages)}`;
+
+  function showAllLanguages(languages) {
+    let langs = [];
+    languages.forEach((language) => langs.push(language.name));
+    return [...langs];
+  }
+
+  const borderCountriesDiv = createElem("div", rowEl, "border-countries-div");
+  const borderCountriesTitle = createElem(
+    "h4",
+    borderCountriesDiv,
+    "border-countries-title"
+  );
+  borderCountriesTitle.innerText = "Border Countries:";
+
+  country.borders.forEach((border) => {
+    const borderCountries = createElem("button", borderCountriesDiv, "borders");
+    borderCountries.innerText = getCountryNameFromCode(border);
+    borderCountries.addEventListener("click", () => {
+      let clickedBorderCountry = allCountries.find(
+        (country) => country.name === borderCountries.innerText
+      );
+      displayCountryDetails(clickedBorderCountry);
+    });
+  });
+  function getCountryNameFromCode(code) {
+    let targetCountry = allCountries.find(
+      (country) => country.alpha3Code === code
+    );
+    return targetCountry.name;
+  }
 }
 
 window.onload = setup;

@@ -2,6 +2,7 @@ const root = document.getElementById("root");
 const rowEl = createElem("div", root, "row");
 
 let allCountries = [];
+let isLight = true;
 
 function setup() {
   setupHeader();
@@ -18,6 +19,18 @@ function createElem(tag, parent, cls) {
 function setupHeader() {
   const header = document.createElement("header");
   document.body.insertBefore(header, document.body.firstChild);
+
+  const topDiv = createElem("div", header, "top-div");
+
+  const topTitle = createElem("h2", topDiv, "top-title");
+  topTitle.innerText = "Where in the world?";
+
+  const modeSwitcher = createElem("div", topDiv, "mode-switcher");
+  modeSwitcher.innerText = "Dark Mode";
+  modeSwitcher.addEventListener("click", () => {
+    document.body.style.background = isLight ? "black" : "white";
+    isLight = !isLight;
+  });
 
   const searchBox = createElem("input", header, "search-box");
   searchBox.addEventListener("input", callback);

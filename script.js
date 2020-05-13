@@ -2,7 +2,6 @@ const root = document.getElementById("root");
 const rowEl = createElem("div", root, "row");
 
 let allCountries = [];
-let selectedCountry = [];
 
 function setup() {
   setupHeader();
@@ -69,9 +68,9 @@ function getCountriesData() {
   fetch("https://restcountries.eu/rest/v2/all")
     .then((response) => response.json())
     .then((data) => {
+      console.log(data);
       allCountries = data;
       showCountries(allCountries);
-      console.log(data);
     });
 }
 
@@ -87,9 +86,9 @@ function createCard(country) {
 
   const countryCard = createElem("div", cardContainer, "country-card");
 
-  //   const imageContainer = createElem("div", countryCard, "image-container");
+  const imageContainer = createElem("div", countryCard, "image-container");
 
-  const flag = createElem("img", countryCard, "flag");
+  const flag = createElem("img", imageContainer, "flag");
   flag.src = country.flag;
   flag.alt = `Flag of ${country.name}`;
 
@@ -111,7 +110,6 @@ function createCard(country) {
 
   function callback() {
     rowEl.innerHTML = "";
-    console.log("clicked");
     displayCountryDetails(country);
   }
 }
@@ -162,12 +160,17 @@ function displayCountryDetails(country) {
   languages.innerText = `Languages: ${showAllLanguages(country.languages)}`;
 
   function showAllLanguages(languages) {
-    let langs = [];
-    languages.forEach((language) => langs.push(language.name));
-    return [...langs];
+    let langs = "";
+    languages.forEach(
+      (language, index) =>
+        (langs +=
+          index !== languages.length - 1 ? language.name + ", " : language.name)
+    );
+    return langs;
   }
 
   const borderCountriesDiv = createElem("div", rowEl, "border-countries-div");
+
   const borderCountriesTitle = createElem(
     "h4",
     borderCountriesDiv,
@@ -178,6 +181,7 @@ function displayCountryDetails(country) {
   country.borders.forEach((border) => {
     const borderCountries = createElem("button", borderCountriesDiv, "borders");
     borderCountries.innerText = getCountryNameFromCode(border);
+
     borderCountries.addEventListener("click", () => {
       let clickedBorderCountry = allCountries.find(
         (country) => country.name === borderCountries.innerText
@@ -185,6 +189,7 @@ function displayCountryDetails(country) {
       displayCountryDetails(clickedBorderCountry);
     });
   });
+
   function getCountryNameFromCode(code) {
     let targetCountry = allCountries.find(
       (country) => country.alpha3Code === code

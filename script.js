@@ -9,11 +9,20 @@ function setup() {
   getCountriesData();
 }
 
-function createElem(tag, parent, cls) {
+function createElem(tag, parent, cls, text) {
   const elem = document.createElement(tag);
   parent.appendChild(elem);
   elem.className = cls;
+  if (text != null) {
+    elem.innerText = text;
+  }
   return elem;
+}
+
+function addMenuOption(parentSelectEl, optionClass, optionText) {
+  const option = createElem("option", parentSelectEl, optionClass, optionText);
+  option.value = optionText;
+  return option;
 }
 
 function setupHeader() {
@@ -22,22 +31,20 @@ function setupHeader() {
 
   const topDiv = createElem("div", header, "top-div");
 
-  const topTitle = createElem("h2", topDiv, "top-title");
-  topTitle.innerText = "Where in the world?";
+  createElem("h2", topDiv, "top-title", "Where in the world?");
+  // topTitle.innerText = "Where in the world?";
 
-  const modeSwitcher = createElem("div", topDiv, "mode-switcher");
-  modeSwitcher.innerText = "Dark Mode";
+  const modeSwitcher = createElem("div", topDiv, "mode-switcher", "Dark Mode");
   modeSwitcher.addEventListener("click", () => {
     document.body.style.background = isLight ? "black" : "white";
     isLight = !isLight;
   });
 
   const searchBox = createElem("input", header, "search-box");
-  searchBox.addEventListener("input", callback);
-
-  function callback() {
+  searchBox.addEventListener("input", displayMatchingCountries);
+  function displayMatchingCountries() {
     let searchedCountries = searchCountries(allCountries, searchBox.value);
-    showCountries(searchedCountries);
+    displayCountries(searchedCountries);
   }
 
   function searchCountries(countries, searchTerm) {
@@ -49,7 +56,6 @@ function setupHeader() {
   const regionSelector = createElem("select", header, "select-menu");
 
   addMenuOption(regionSelector, "select-option", "Filter by Region");
-
   addMenuOption(regionSelector, "select-option", "Africa");
   addMenuOption(regionSelector, "select-option", "Americas");
   addMenuOption(regionSelector, "select-option", "Asia");
@@ -58,22 +64,15 @@ function setupHeader() {
 
   regionSelector.addEventListener("change", () => {
     regionSelector.value === "Filter by Region"
-      ? showCountries(allCountries)
+      ? displayCountries(allCountries)
       : filterByRegion(allCountries, regionSelector.value);
   });
 
-  function addMenuOption(parentSelectEl, optionClass, optionText) {
-    const option = createElem("option", parentSelectEl, optionClass);
-    option.innerText = optionText;
-    option.value = optionText;
-    return option;
-  }
-
-  function filterByRegion(countries, selectValue) {
+  function filterByRegion(countries, selectedValue) {
     let filteredCountriesByRegion = countries.filter(
-      (country) => country.region === selectValue
+      (country) => country.region === selectedValue
     );
-    showCountries(filteredCountriesByRegion);
+    displayCountries(filteredCountriesByRegion);
   }
 }
 
@@ -83,11 +82,11 @@ function getCountriesData() {
     .then((data) => {
       console.log(data);
       allCountries = data;
-      showCountries(allCountries);
+      displayCountries(allCountries);
     });
 }
 
-function showCountries(countries) {
+function displayCountries(countries) {
   rowEl.innerHTML = "";
   countries.forEach((country) => {
     createCard(country);
@@ -95,7 +94,7 @@ function showCountries(countries) {
 }
 
 function createCard(country) {
-  const cardContainer = createElem("div", rowEl, "card-container col-3");
+  const cardContainer = createElem("div", rowEl, "card-container col-12");
 
   const countryCard = createElem("div", cardContainer, "country-card");
 
@@ -107,20 +106,34 @@ function createCard(country) {
 
   const infoDiv = createElem("div", countryCard, "info");
 
-  const name = createElem("h3", infoDiv, "name");
-  name.innerText = country.name;
+  createElem("h3", infoDiv, "name", country.name);
+  // name.innerText = country.name;
 
-  const population = createElem("p", infoDiv, "population");
-  population.innerText = `Population: ${country.population.toLocaleString()}`;
+  const population = createElem(
+    "p",
+    infoDiv,
+    "population",
+    `Population: ${country.population.toLocaleString()}`
+  );
+  addBoldSpan(population, "Population: ");
 
-  const region = createElem("p", infoDiv, "region");
-  region.innerText = `Region: ${country.region}`;
+  const region = createElem(
+    "p",
+    infoDiv,
+    "region",
+    `Region: ${country.region}`
+  );
+  addBoldSpan(region, "Region: ");
 
-  const capital = createElem("p", infoDiv, "capital");
-  capital.innerText = `Capital: ${country.capital}`;
+  const capital = createElem(
+    "p",
+    infoDiv,
+    "capital",
+    `Capital: ${country.capital}`
+  );
+  addBoldSpan(capital, "Capital: ");
 
   countryCard.addEventListener("click", callback);
-
   function callback() {
     rowEl.innerHTML = "";
     displayCountryDetails(country);
@@ -130,12 +143,12 @@ function createCard(country) {
 function displayCountryDetails(country) {
   document.querySelector("header").innerHTML = "";
   rowEl.innerHTML = "";
+
   const backBtnDiv = createElem("div", rowEl, "back-btn-div");
-  const backBtn = createElem("button", backBtnDiv, "back-btn");
-  backBtn.innerText = "back";
+  const backBtn = createElem("button", backBtnDiv, "back-btn", "back");
   backBtn.addEventListener("click", () => {
     setupHeader();
-    showCountries(allCountries);
+    displayCountries(allCountries);
   });
 
   const flagImageDiv = createElem("div", rowEl, "flag-image-div");
@@ -145,57 +158,93 @@ function displayCountryDetails(country) {
 
   const firstInfoDiv = createElem("div", rowEl, "first-info-div");
 
-  const nameDetail = createElem("h3", firstInfoDiv, "name-detail");
-  nameDetail.innerText = country.name;
+  createElem("h3", firstInfoDiv, "name-detail", country.name);
+  // nameDetail.innerText = country.name;
 
-  const nativeNameDetail = createElem("p", firstInfoDiv, "native-name-detail");
-  nativeNameDetail.innerText = `Native Name: ${country.nativeName}`;
+  const nativeNameDetail = createElem(
+    "p",
+    firstInfoDiv,
+    "native-name-detail",
+    `Native Name: ${country.nativeName}`
+  );
+  addBoldSpan(nativeNameDetail, "Native Name: ");
 
-  const populationDetail = createElem("p", firstInfoDiv, "population-detail");
-  populationDetail.innerText = `Population: ${country.population.toLocaleString()}`;
+  const populationDetail = createElem(
+    "p",
+    firstInfoDiv,
+    "population-detail",
+    `Population: ${country.population.toLocaleString()}`
+  );
+  addBoldSpan(populationDetail, "Population: ");
 
-  const regionDetail = createElem("p", firstInfoDiv, "region-detail");
-  regionDetail.innerText = `Region: ${country.region}`;
+  const regionDetail = createElem(
+    "p",
+    firstInfoDiv,
+    "region-detail",
+    `Region: ${country.region}`
+  );
+  addBoldSpan(regionDetail, "Region: ");
 
-  const subRegionDetail = createElem("p", firstInfoDiv, "sub-region-detail");
-  subRegionDetail.innerText = `Sub Region: ${country.subregion}`;
+  const subRegionDetail = createElem(
+    "p",
+    firstInfoDiv,
+    "sub-region-detail",
+    `Sub Region: ${country.subregion}`
+  );
+  addBoldSpan(subRegionDetail, "Sub Region: ");
 
-  const capitalDetail = createElem("p", firstInfoDiv, "capital-detail");
-  capitalDetail.innerText = `Capital: ${country.capital}`;
+  const capitalDetail = createElem(
+    "p",
+    firstInfoDiv,
+    "capital-detail",
+    `Capital: ${country.capital}`
+  );
+  addBoldSpan(capitalDetail, "Capital: ");
 
   const secondInfoDiv = createElem("div", rowEl, "second-info-div");
 
-  const topLevelDomain = createElem("p", secondInfoDiv, "top-level-domain");
-  topLevelDomain.innerText = `Top Level Domain: ${country.topLevelDomain[0]}`;
+  const topLevelDomain = createElem(
+    "p",
+    secondInfoDiv,
+    "top-level-domain",
+    `Top Level Domain: ${country.topLevelDomain[0]}`
+  );
+  addBoldSpan(topLevelDomain, "Top Level Domain: ");
 
-  const currencies = createElem("p", secondInfoDiv, "currencies");
-  currencies.innerText = `Currencies: ${country.currencies[0].name}`;
+  const currencies = createElem(
+    "p",
+    secondInfoDiv,
+    "currencies",
+    `Currencies: ${country.currencies[0].name}`
+  );
+  addBoldSpan(currencies, "Currencies: ");
 
-  const languages = createElem("p", secondInfoDiv, "languages");
-  languages.innerText = `Languages: ${showAllLanguages(country.languages)}`;
-
-  function showAllLanguages(languages) {
-    let langs = "";
-    languages.forEach(
-      (language, index) =>
-        (langs +=
-          index !== languages.length - 1 ? language.name + ", " : language.name)
-    );
-    return langs;
-  }
+  const languages = createElem(
+    "p",
+    secondInfoDiv,
+    "languages",
+    `Languages: ${separateLanguages(country.languages)}`
+  );
+  addBoldSpan(languages, "Languages: ");
 
   const borderCountriesDiv = createElem("div", rowEl, "border-countries-div");
 
-  const borderCountriesTitle = createElem(
+  createElem(
     "h4",
     borderCountriesDiv,
-    "border-countries-title"
+    "border-countries-title",
+    "Border Countries:"
   );
-  borderCountriesTitle.innerText = "Border Countries:";
+  // borderCountriesTitle.innerText = "Border Countries:";
 
   country.borders.forEach((border) => {
-    const borderCountries = createElem("button", borderCountriesDiv, "borders");
-    borderCountries.innerText = getCountryNameFromCode(allCountries, border);
+    const borderCountries = createElem(
+      "button",
+      borderCountriesDiv,
+      "borders",
+      getCountryNameFromCode(allCountries, border)
+    );
+    // borderCountries.innerText = getCountryNameFromCode(allCountries, border);
 
     borderCountries.addEventListener("click", () => {
       let clickedBorderCountry = allCountries.find(
@@ -204,6 +253,23 @@ function displayCountryDetails(country) {
       displayCountryDetails(clickedBorderCountry);
     });
   });
+}
+
+function addBoldSpan(element, titleText) {
+  element.innerHTML = element.innerHTML.replace(
+    titleText,
+    `<span class="bold">${titleText}</span> `
+  );
+}
+
+function separateLanguages(languages) {
+  let langs = "";
+  languages.forEach(
+    (language, index) =>
+      (langs +=
+        index !== languages.length - 1 ? language.name + ", " : language.name)
+  );
+  return langs;
 }
 
 function getCountryNameFromCode(countries, code) {

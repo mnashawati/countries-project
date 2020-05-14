@@ -41,3 +41,8 @@ body {
 .capital {
   margin: 5px 0;
 }
+
+.flag-image-lrg {
+  width: 530px;
+  height: 320px;
+}

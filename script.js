@@ -94,7 +94,11 @@ function displayCountries(countries) {
 }
 
 function createCard(country) {
-  const cardContainer = createElem("div", rowEl, "card-container col-12");
+  const cardContainer = createElem(
+    "div",
+    rowEl,
+    "card-container col-12 md-col-6 lg-col-4 xl-col-3"
+  );
 
   const countryCard = createElem("div", cardContainer, "country-card");
 

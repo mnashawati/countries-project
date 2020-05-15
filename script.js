@@ -2,7 +2,6 @@ const root = document.getElementById("root");
 const rowEl = createElem("div", root, "row");
 
 let allCountries = [];
-let isLight = true;
 
 function setup() {
   setupHeader();
@@ -34,10 +33,20 @@ function setupHeader() {
   createElem("h2", topDiv, "top-title", "Where in the world?");
   // topTitle.innerText = "Where in the world?";
 
-  const modeSwitcher = createElem("div", topDiv, "mode-switcher", "Dark Mode");
+  const modeSwitcher = createElem(
+    "button",
+    topDiv,
+    "mode-switcher",
+    "Dark Mode"
+  );
   modeSwitcher.addEventListener("click", () => {
-    document.body.style.background = isLight ? "black" : "white";
-    isLight = !isLight;
+    const bodyEl = document.querySelector("body");
+    bodyEl.classList.toggle("dark-mode");
+
+    let cardEls = document.querySelectorAll(".country-card");
+    Array.from(cardEls).forEach((card) => card.classList.toggle("card-dark-mode"));
+    // document.body.style.background = isLight ? "black" : "white";
+    // isLight = !isLight;
   });
 
   const searchBox = createElem("input", header, "search-box");

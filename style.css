@@ -46,3 +46,14 @@ body {
   width: 530px;
   height: 320px;
 }
+
+.dark-mode {
+  color: hsl(0, 0%, 100%);
+  background-color: hsl(207, 26%, 17%);
+  background-color: pink;
+}
+
+.card-dark-mode {
+  color: hsl(0, 0%, 100%);
+  background-color: hsl(209, 23%, 22%);
+}

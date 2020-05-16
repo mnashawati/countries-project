@@ -50,7 +50,7 @@ body {
 .dark-mode {
   color: hsl(0, 0%, 100%);
   background-color: hsl(207, 26%, 17%);
-  background-color: pink;
+  background-color: hsl(209, 23%, 22%);
 }
 
 .card-dark-mode {

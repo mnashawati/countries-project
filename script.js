@@ -24,6 +24,18 @@ function addMenuOption(parentSelectEl, optionClass, optionText) {
   return option;
 }
 
+document.querySelector(".mode-switcher").addEventListener("click", () => {
+  const bodyEl = document.querySelector("body");
+  bodyEl.classList.toggle("dark-mode");
+
+  let cardEls = document.querySelectorAll(".country-card");
+  Array.from(cardEls).forEach((card) =>
+    card.classList.toggle("card-dark-mode")
+  );
+  // document.body.style.background = isLight ? "black" : "white";
+  // isLight = !isLight;
+});
+
 function setupHeader() {
   const header = document.createElement("header");
   document.body.insertBefore(header, document.body.firstChild);
@@ -39,15 +51,6 @@ function setupHeader() {
     "mode-switcher",
     "Dark Mode"
   );
-  modeSwitcher.addEventListener("click", () => {
-    const bodyEl = document.querySelector("body");
-    bodyEl.classList.toggle("dark-mode");
-
-    let cardEls = document.querySelectorAll(".country-card");
-    Array.from(cardEls).forEach((card) => card.classList.toggle("card-dark-mode"));
-    // document.body.style.background = isLight ? "black" : "white";
-    // isLight = !isLight;
-  });
 
   const searchBox = createElem("input", header, "search-box");
   searchBox.addEventListener("input", displayMatchingCountries);
